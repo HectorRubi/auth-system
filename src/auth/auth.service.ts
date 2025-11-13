@@ -1,8 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { EnvironmentVariables } from '../environment.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Auth } from './entities/auth.entity';
 
 @Injectable()
 export class AuthService {
-  constructor(private configService: ConfigService<EnvironmentVariables>) {}
+  constructor(
+    @InjectRepository(Auth)
+    private authRepository: Repository<Auth>,
+  ) {}
 }
