@@ -1,7 +1,7 @@
 import { Controller, Post } from '@nestjs/common';
 
-@Controller('user')
-export class UserController {
+@Controller('users')
+export class UsersController {
   @Post()
   create() {
     // Registration logic goes here
