@@ -75,8 +75,6 @@ export class AuthService {
       expiresIn: '10m',
     });
 
-    console.log(accessToken, jwt.decode(accessToken));
-
     return accessToken;
   }
 
