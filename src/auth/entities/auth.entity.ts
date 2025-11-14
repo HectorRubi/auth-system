@@ -7,7 +7,10 @@ export class Auth {
   id: number;
 
   @Column()
-  refreshToken: string;
+  tokenHash: string;
+
+  @Column()
+  expiresAt: Date;
 
   @ManyToOne(() => User, (user) => user.id, {
     onDelete: 'CASCADE',
