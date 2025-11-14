@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,8 +13,12 @@ export class UsersService {
   ) {}
 
   async create(body: CreateUserDto) {
+    // Create username variable for easier access
+    const username = body.username;
+
+    // Check if user with the same username already exists
     const existingUser = await this.userRepository.findOne({
-      where: { username: body.username },
+      where: { username },
     });
 
     if (existingUser) {
@@ -25,9 +27,9 @@ export class UsersService {
       );
     }
 
+    // User creation
     const user = this.userRepository.create();
 
-    const username = body.username;
     const password = body.password;
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
