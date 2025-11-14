@@ -13,7 +13,7 @@ export class Auth {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   tokenHash: string;
 
   @Column()
