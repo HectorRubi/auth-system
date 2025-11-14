@@ -43,7 +43,7 @@ export class UsersService {
     const savedUser = await this.userRepository.save(user);
 
     return {
-      id: savedUser.id,
+      id: savedUser.uuid,
       username: savedUser.username,
     };
   }
