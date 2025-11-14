@@ -1,7 +1,7 @@
+import * as bcrypt from 'bcrypt';
 import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create.dto';
 
@@ -12,14 +12,16 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
+  async findByUsername(username: string): Promise<User | null> {
+    return await this.userRepository.findOneBy({ username });
+  }
+
   async create(body: CreateUserDto) {
     // Create username variable for easier access
     const username = body.username;
 
     // Check if user with the same username already exists
-    const existingUser = await this.userRepository.findOne({
-      where: { username },
-    });
+    const existingUser = await this.findByUsername(username);
 
     if (existingUser) {
       throw new ConflictException(
