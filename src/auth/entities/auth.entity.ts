@@ -26,6 +26,7 @@ export class Auth {
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.id, {
+    eager: true,
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
   })
