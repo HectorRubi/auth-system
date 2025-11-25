@@ -1,7 +1,11 @@
 import * as crypto from 'crypto';
 import * as bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { Repository } from 'typeorm';
@@ -10,6 +14,7 @@ import { UsersService } from 'src/users/users.service';
 import { User } from 'src/users/entities/user.entity';
 import { Auth } from './entities/auth.entity';
 import { LoginDto } from './dto/login.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 @Injectable()
 export class AuthService {
@@ -51,6 +56,29 @@ export class AuthService {
     auth.tokenHash = tokenHash;
     auth.expiresAt = expiresAt;
     await this.authRepository.save(auth);
+
+    return { refreshToken, accessToken };
+  }
+
+  async refreshToken(body: RefreshTokenDto) {
+    const authUser = await this.authRepository.findOneBy({
+      tokenHash: this.generateRefreshTokenHash(body.refreshToken),
+    });
+
+    if (!authUser || authUser.expiresAt < new Date()) {
+      throw new BadRequestException('The refresh token has expired.');
+    }
+
+    const accessToken = this.generateAccessToken(authUser.user);
+    const {
+      token: refreshToken,
+      tokenHash,
+      expiresAt,
+    } = this.generateRefreshToken();
+
+    authUser.tokenHash = tokenHash;
+    authUser.expiresAt = expiresAt;
+    await this.authRepository.save(authUser);
 
     return { refreshToken, accessToken };
   }
