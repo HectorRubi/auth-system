@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken';
 import {
   BadRequestException,
   Injectable,
-  UnauthorizedException,
+  InternalServerErrorException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -32,12 +32,12 @@ export class AuthService {
     // Validate user credentials in DB
     const user = await this.usersService.findByUsername(username);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new BadRequestException('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new BadRequestException('Invalid credentials');
     }
 
     // Generate JWT access token
@@ -94,7 +94,7 @@ export class AuthService {
     });
 
     if (!secretKey) {
-      throw new UnauthorizedException(
+      throw new InternalServerErrorException(
         'Unable to login at this time. Please try again later.',
       );
     }
