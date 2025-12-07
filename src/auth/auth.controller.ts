@@ -1,7 +1,8 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Req } from '@nestjs/common';
 import { AuthService } from './services/auth.service';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { LogOutDto } from './dto/logout.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,9 +14,10 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout() {
-    // Logout logic goes here
-    return { message: 'User logged out successfully' };
+  async logout(@Req() req: any, @Body() body: LogOutDto) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
+    const userId = parseInt(req.user.sub, 10) ?? null;
+    return await this.authService.logout(body, userId);
   }
 
   @Post('refresh-token')

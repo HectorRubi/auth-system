@@ -7,6 +7,7 @@ import { Auth } from '../entities/auth.entity';
 import { LoginDto } from '../dto/login.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { TokenService } from './token.service';
+import { LogOutDto } from '../dto/logout.dto';
 
 @Injectable()
 export class AuthService {
@@ -50,6 +51,26 @@ export class AuthService {
     await this.authRepository.save(auth);
 
     return { refreshToken, accessToken };
+  }
+
+  async logout(body: LogOutDto, userId: number | null) {
+    if (!userId) {
+      throw new BadRequestException('Invalid user.');
+    }
+
+    const refreshTokenHash = this.tokenService.generateRefreshTokenHash(
+      body.refreshToken,
+    );
+
+    const auth = await this.authRepository.findOne({
+      where: { user: { id: userId }, tokenHash: refreshTokenHash },
+    });
+
+    if (auth) {
+      await this.authRepository.remove(auth);
+    }
+
+    return { message: 'User logged out successfully' };
   }
 
   async refreshToken(body: RefreshTokenDto) {
