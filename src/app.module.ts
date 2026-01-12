@@ -25,7 +25,6 @@ import { AuthMiddleware } from './middleware/auth.middleware';
         password: configService.get('PG_PASSWORD', { infer: true }),
         database: configService.get('PG_DATABASE', { infer: true }),
         autoLoadEntities: true,
-        synchronize: true,
       }),
       inject: [ConfigService],
     }),
