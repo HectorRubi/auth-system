@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { EnvironmentVariables } from 'src/config/environment-variables';
 import { User } from 'src/users/entities/user.entity';
+import { JwtPayload } from 'src/types/jwt-payload';
 
 @Injectable()
 export class TokenService {
@@ -18,7 +19,7 @@ export class TokenService {
       name: user.username,
     };
 
-    const accessToken = await this.jwtService.signAsync(payload);
+    const accessToken = await this.jwtService.signAsync<JwtPayload>(payload);
 
     return accessToken;
   }
