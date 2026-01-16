@@ -1,8 +1,8 @@
 import { Controller, Post, Body, Req } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
-import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { LogOutDto } from './dto/logout.dto';
+import { AuthService } from '../services/auth.service';
+import { LoginDto } from '../dto/login.dto';
+import { RefreshTokenDto } from '../dto/refresh-token.dto';
+import { LogOutDto } from '../dto/logout.dto';
 
 @Controller('auth')
 export class AuthController {
