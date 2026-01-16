@@ -1,39 +1,24 @@
 import * as crypto from 'crypto';
-import jwt from 'jsonwebtoken';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import { EnvironmentVariables } from 'src/config/environment-variables';
 import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class TokenService {
-  constructor(readonly configService: ConfigService<EnvironmentVariables>) {}
+  constructor(
+    readonly configService: ConfigService<EnvironmentVariables>,
+    private readonly jwtService: JwtService,
+  ) {}
 
-  getTokenSecretKey(): string {
-    const secretKey = this.configService.get('jwt.secret', {
-      infer: true,
-    });
-
-    if (!secretKey) {
-      throw new InternalServerErrorException(
-        'Unable to login at this time. Please try again later.',
-      );
-    }
-
-    return secretKey;
-  }
-
-  generateAccessToken(user: User): string {
+  async generateAccessToken(user: User): Promise<string> {
     const payload = {
       sub: user.id,
       name: user.username,
     };
 
-    const secretKey = this.getTokenSecretKey();
-
-    const accessToken = jwt.sign(payload, secretKey, {
-      expiresIn: '10m',
-    });
+    const accessToken = await this.jwtService.signAsync(payload);
 
     return accessToken;
   }
