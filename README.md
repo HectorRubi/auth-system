@@ -51,6 +51,12 @@ JWT_EXPIRES_IN=jwt_expiration_time
 docker compose up
 ```
 
+Then to create the database schema run:
+
+```bash
+docker exec auth-system-db-1 npm run migration:run
+```
+
 ## API 📡
 
 Base URL: `http://localhost:3000`
