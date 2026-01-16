@@ -4,6 +4,7 @@ import { LoginDto } from '../dto/login.dto';
 import { RefreshTokenDto } from '../dto/refresh-token.dto';
 import { LogOutDto } from '../dto/logout.dto';
 import { AuthGuard } from '../guards/auth.guard';
+import express from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -16,9 +17,8 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Post('logout')
-  async logout(@Req() req: any, @Body() body: LogOutDto) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-argument
-    const userId = parseInt(req.user.sub, 10) ?? null;
+  async logout(@Req() req: express.Request, @Body() body: LogOutDto) {
+    const userId = req.user.sub;
     return await this.authService.logout(body, userId);
   }
 
