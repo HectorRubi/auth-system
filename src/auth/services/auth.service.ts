@@ -1,5 +1,9 @@
 import * as bcrypt from 'bcrypt';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersService } from 'src/users/services/users.service';
@@ -34,7 +38,7 @@ export class AuthService {
     }
 
     // Generate JWT access token
-    const accessToken = this.tokenService.generateAccessToken(user);
+    const accessToken = await this.tokenService.generateAccessToken(user);
 
     // Generate Refresh token
     const {
@@ -48,7 +52,11 @@ export class AuthService {
     auth.user = user;
     auth.tokenHash = tokenHash;
     auth.expiresAt = expiresAt;
-    await this.authRepository.save(auth);
+    const res = await this.authRepository.save(auth);
+
+    if (!res) {
+      throw new InternalServerErrorException('Login failed, please try again.');
+    }
 
     return { refreshToken, accessToken };
   }
@@ -82,7 +90,10 @@ export class AuthService {
       throw new BadRequestException('The refresh token has expired.');
     }
 
-    const accessToken = this.tokenService.generateAccessToken(authUser.user);
+    const accessToken = await this.tokenService.generateAccessToken(
+      authUser.user,
+    );
+
     const {
       token: refreshToken,
       tokenHash,
