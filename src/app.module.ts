@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -11,7 +6,6 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { EnvironmentVariables } from './config/environment-variables';
-import { AuthMiddleware } from './middleware/auth.middleware';
 import configuration from './config/configurations';
 
 @Module({
@@ -35,14 +29,4 @@ import configuration from './config/configurations';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(AuthMiddleware)
-      .exclude({ path: 'users', method: RequestMethod.POST })
-      .forRoutes(
-        { path: 'users', method: RequestMethod.ALL },
-        { path: 'auth/logout', method: RequestMethod.POST },
-      );
-  }
-}
+export class AppModule {}
