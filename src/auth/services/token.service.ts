@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { EnvironmentVariables } from 'src/environment.model';
+import { EnvironmentVariables } from 'src/config/environment-variables';
 import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class TokenService {
   constructor(readonly configService: ConfigService<EnvironmentVariables>) {}
 
   getTokenSecretKey(): string {
-    const secretKey = this.configService.get('JWT_SECRET', {
+    const secretKey = this.configService.get('jwt.secret', {
       infer: true,
     });
 

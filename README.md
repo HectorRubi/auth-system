@@ -40,6 +40,7 @@ PG_USER=your_database_user
 PG_PASSWORD=your_database_password
 PG_DATABASE=your_database_name
 JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=jwt_expiration_time
 ```
 
 > 💡 Keep secrets out of source control and use a secrets manager for production.

@@ -7,7 +7,7 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import { EnvironmentVariables } from 'src/environment.model';
+import { EnvironmentVariables } from 'src/config/environment-variables';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
@@ -38,7 +38,7 @@ export class AuthMiddleware implements NestMiddleware {
   }
 
   private getSecretKey(): string {
-    const secretKey = this.configService.get('JWT_SECRET', {
+    const secretKey = this.configService.get('jwt.secret', {
       infer: true,
     });
 
